@@ -23,6 +23,11 @@ function SearchBar({ renderResults, renderTerm }) {
     const handleSubmit = (event) => {
         event.preventDefault();
         renderResults();
+
+        const resultsComponent = document.getElementById('results');
+        if (resultsComponent) {
+          resultsComponent.scrollIntoView({ behavior: 'smooth' });
+        }
     }
 
     return (
