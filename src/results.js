@@ -11,8 +11,9 @@ export default function Results(props) {
 
   useEffect(() => {
     async function fetchData() {
+      console.log(queryTerm);
       const driver = neo4j.driver(
-        'neo4j@neo4j+s://39f470cd.databases.neo4j.io',
+        'neo4j+s://39f470cd.databases.neo4j.io',
         neo4j.auth.basic('neo4j', 'GRQHnkLdqja2PXzjYUg4wwoCxCI3uAGPOjbe6N_K6KM')
       );
       const session = driver.session();
@@ -20,19 +21,19 @@ export default function Results(props) {
         const result = await session.writeTransaction(tx => 
             tx.run(`
               CALL {
-                CALL db.index.fulltext.queryNodes("BP_search", ${queryTerm}~)
+                CALL db.index.fulltext.queryNodes("BP_search", "${queryTerm}~")
                 YIELD node, score
                 RETURN node, score
                 UNION ALL
-                CALL db.index.fulltext.queryNodes("Manufacturer_search", ${queryTerm}~)
+                CALL db.index.fulltext.queryNodes("Manufacturer_search", "${queryTerm}~")
                 YIELD node, score
                 RETURN node, score
                 UNION ALL
-                CALL db.index.fulltext.queryNodes("Matrix_QC_search", ${queryTerm}~)
+                CALL db.index.fulltext.queryNodes("Matrix_QC_search", "${queryTerm}~")
                 YIELD node, score
                 RETURN node, score
                 UNION ALL
-                CALL db.index.fulltext.queryNodes("Special_requirement_search", ${queryTerm}~)
+                CALL db.index.fulltext.queryNodes("Special_requirement_search", "lighs~")
                 YIELD node, score
                 RETURN node, score
               }
@@ -67,21 +68,22 @@ export default function Results(props) {
       <div id='scrollup'>
         <ScrollToTopButton />
       </div>
+      <div>Query Term: {queryTerm}</div>
       <div id='search-results' ref={resultsRef}>
         {searchResults.length > 0 ? (
           <div>
             <h2>Search Results:</h2>
-            <ul>
-              {searchResults.map((result, index) => (
-                <li key={index}>
-                  <p>n: {result.n.properties.name}</p>
-                  <p>totalScore: {result.totalScore}</p>
-                </li>
-              ))}
-            </ul>
+            {searchResults.map((record, index) => (
+              <div key={index}>
+                <p>{record.n.properties.Name}</p>
+                <p>{record.totalScore}</p>
+              </div>
+            ))}
           </div>
         ) : (
-          <div>No search results found.</div>
+          <div>
+            <p>No search results.</p>
+          </div>
         )}
       </div>
     </div>
