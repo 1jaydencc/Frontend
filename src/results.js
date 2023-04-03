@@ -73,12 +73,12 @@ export default function Results(props) {
         {searchResults.length > 0 ? (
           <div>
             <h2>Search Results:</h2>
-            {searchResults.map((record, index) => (
-              <div key={index}>
-                <p>{record.n.properties.Name}</p>
-                <p>{record.totalScore}</p>
-              </div>
-            ))}
+            {searchResults.map((result, index) => (
+                <div key={index}>
+                    <p>{result.n.labels} {result.n.properties.BP_number}</p>
+                    <p>{JSON.stringify(result)}</p>
+                </div>
+            ))} 
           </div>
         ) : (
           <div>
