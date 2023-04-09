@@ -46,7 +46,16 @@ export default function Results(props) {
         );
 
         const records = result.records.map(record => record.toObject());
-        setSearchResults(records);
+        
+        const uniqueResults = records.reduce((acc, current) => {
+          const bpNumber = current.n.properties.BP_number;
+          if (!acc[bpNumber]) {
+            acc[bpNumber] = current;
+          }
+          return acc;
+        }, {});
+        
+        setSearchResults(Object.values(uniqueResults));
       } finally {
         await session.close();
       }
